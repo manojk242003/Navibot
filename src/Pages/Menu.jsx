@@ -43,9 +43,7 @@ function Menu() {
         {menuItems.map((item) => (
           <MenuComponent
             key={item.id}  // Use a unique key for each component
-            item={item}
-            setCart={setCart}  // Pass setCart as prop for adding items to cart
-            cart={cart}  // Pass cart state
+            item={item}// Pass cart state
           />
         ))}
       </div>
