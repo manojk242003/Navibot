@@ -17,28 +17,28 @@ const Navbar = () => {
 
   }
 
-  const signinHandler = async () => {
-    try {
-        const res = await axios.post('http://localhost:5001/api/v1/signin', {
-            username: username,
-            password: password,
-        });
-        const { token, message } = res.data;
+  // const signinHandler = async () => {
+  //   try {
+  //       const res = await axios.post('http://localhost:5001/api/v1/signin', {
+  //           username: username,
+  //           password: password,
+  //       });
+  //       const { token, message } = res.data;
 
-        if (token) {
-            localStorage.setItem('token', token);
-            console.log('Logged in');
-            setLoggedin(true);
-            setOpen(false); // Close modal after successful login
-        } else {
-            setErrorMessage(message || 'Login failed'); // Display server message if login fails
-        }
-    } catch (error) {
-        setErrorMessage(
-            error.response?.data?.message || 'An error occurred. Please try again.' // Handle errors
-        );
-    }
-};
+  //       if (token) {
+  //           localStorage.setItem('token', token);
+  //           console.log('Logged in');
+  //           setLoggedin(true);
+  //           setOpen(false); // Close modal after successful login
+  //       } else {
+  //           setErrorMessage(message || 'Login failed'); // Display server message if login fails
+  //       }
+  //   } catch (error) {
+  //       setErrorMessage(
+  //           error.response?.data?.message || 'An error occurred. Please try again.' // Handle errors
+  //       );
+  //   }
+  // };
 
   return (
     <div className="navbar bg-base-100">
@@ -46,7 +46,14 @@ const Navbar = () => {
         <a className="btn btn-ghost text-xl" href='/'>daisyUI</a>
       </div>
       {
-        loggedin ? (<button onClick={signinHandler} className='border-rounded mx-6'>signin</button>) : (<div className="flex-none">
+        !loggedin ? (
+          <div> 
+              <button onClick={()=>navigate("/signin")}className='border-rounded '>signin/</button>
+              <button onClick={()=>navigate("/signup")}className='border-rounded '>signup</button>
+          </div>
+          
+      ) 
+        : (<div className="flex-none">
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle" aria-label="Cart">
               <div className="indicator">
