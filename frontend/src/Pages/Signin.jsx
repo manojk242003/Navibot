@@ -1,9 +1,25 @@
 import { useState } from 'react'
-
+import axios from "axios"
+import {useNavigate} from "react-router-dom"
+import {Link} from "react-router-dom"
 const Signin = () => {
+  const navigate = useNavigate()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const siginHandler = () => {
+    const siginHandler = (e) => {
+      e.preventDefault();
+      axios.post("http://localhost:5000/login",{email,password}).then(res=>{
+          console.log(res)  
+          if(res.data.msg==="Login successful."){
+            alert("Login successfull")
+            localStorage.setItem("token",res.data.token)
+            navigate("/")
+          }
+          else alert("User doesn't exists or username/password incorrect")
+      }).catch(err=>{
+        alert("Wrong password or User does not exists")
+        console.log("Some error occured")
+      })
         console.log(email, password)
     }
     return (
@@ -75,9 +91,9 @@ const Signin = () => {
   
             <p className="mt-10 text-center text-sm text-gray-500">
               Not a member?{' '}
-              <a href="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+              <Link to="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                 create an account
-              </a>
+              </Link>
             </p>
           </div>
         </div>

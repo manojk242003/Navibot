@@ -1,15 +1,25 @@
 import React, { useState } from 'react'
-
+import axios from "axios"
+import {Link} from 'react-router-dom'
 const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmPassword] = useState('');
-    const [firstName, setFirstName] = useState('');
+    const [username, setusername] = useState('');
     const [lastName, setLastName] = useState('');
     
     
-    const signupHandler = () => {
-        console.log('Signin')
+    const signupHandler = (e) => {
+      e.preventDefault();
+      console.log(username,email,password)
+      axios.post("http://localhost:5000/register",{email,password,username}).then(res=>{
+          console.log(res)  
+          alert("Refistered successfully  ")
+      }).catch((err)=>{
+        // alert("Wrong password or User does not exists")
+        console.log("Some error occured")
+        console.log(err)
+      })
     }
     return (
       <>
@@ -33,6 +43,7 @@ const Signup = () => {
                 </label>
                 <div className="mt-2">
                   <input
+                    onChange={(e) => setEmail(e.target.value)}
                     id="email"
                     name="email"
                     type="email"
@@ -45,28 +56,14 @@ const Signup = () => {
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
-                  First Name
+                  Username
                 </label>
                 <div className="mt-2">
                   <input
-                    id="first_name"
-                    name="first_name"
-                    type="first_name"
-                    required
-                    autoComplete="email"
-                    className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
-                    Last Name
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="last_name"
-                    name="last_name"
-                    type="last_name"
+                  onChange={(e) => setusername(e.target.value)}
+                    id="user_name"
+                    name="user_name"
+                    type="user_name"
                     required
                     autoComplete="email"
                     className="p-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -83,6 +80,7 @@ const Signup = () => {
                 </div>
                 <div className="mt-2">
                   <input
+                    onChange={(e) => setPassword(e.target.value)}
                     id="password"
                     name="password"
                     type="password"
@@ -125,9 +123,9 @@ const Signup = () => {
   
             <p className="mt-10 text-center text-sm text-gray-500">
               Already have an account ?{' '}
-              <a href="/signin" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+              <Link to="/signin" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                 signin
-              </a>
+              </Link>
             </p>
           </div>
         </div>

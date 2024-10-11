@@ -9,6 +9,5 @@ createRoot(document.getElementById('root')).render(
     <RecoilRoot>
     <App />
     </RecoilRoot>
-  
   </StrictMode>,
 )

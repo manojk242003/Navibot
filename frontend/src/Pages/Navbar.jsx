@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { cartState } from '../atoms/CartState';
@@ -7,6 +7,12 @@ const Navbar = () => {
   const navigate = useNavigate();
   const cart = useRecoilValue(cartState);
   const [loggedin,setLoggedin] = useState(false);
+  useEffect(()=>{
+    if(localStorage.getItem("token")){
+      setLoggedin(true);
+    }
+    else navigate("/signin")
+  },[])
 
   const itemCount = cart.reduce((count, item) => count + item.quantity, 0);
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
@@ -14,6 +20,7 @@ const Navbar = () => {
 
   const logouthandler=()=>{
     localStorage.removeItem("token")
+    navigate('/signin')
 
   }
 
@@ -41,9 +48,9 @@ const Navbar = () => {
   // };
 
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-[#FF5200] text-white">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl" href='/'>daisyUI</a>
+        <a className="btn btn-ghost text-xl" href='/'>NaviBOT</a>
       </div>
       {
         !loggedin ? (
@@ -82,7 +89,7 @@ const Navbar = () => {
                 <span className="text-lg font-bold">{itemCount} Item{itemCount !== 1 ? 's' : ''}</span>
                 <span className="text-info">Subtotal: ${subtotal}</span>
                 <div className="card-actions">
-                  <button onClick={() => navigate("/cart")} className="btn btn-primary btn-block">
+                  <button onClick={() => navigate("/cart")} className="btn bg-[#FF5200] text-black btn-block">
                     View cart
                   </button>
                 </div>

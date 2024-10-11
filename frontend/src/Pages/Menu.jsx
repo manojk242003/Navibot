@@ -1,49 +1,52 @@
 import MenuComponent from "../Components/MenuComponent";
 import Navbar from "./Navbar";
-import { useRecoilState } from "recoil";
-import { cartState } from "../atoms/CartState";  // Ensure cartState is imported
-
-const menuItems = [
-  { 
-    id: 1,
-    title: "Lime",
-    price: 80,
-    description: "A refreshing and tangy citrus delight bursting with vibrant flavors.",
-    image: "https://via.placeholder.com/150", // Replace with actual image URL
-    rating: 4.3,
-    reviews: 81,
-  },
-  { 
-    id: 2,
-    title: "Mango Shake",
-    price: 100,
-    description: "A creamy and rich mango shake that leaves you craving for more.",
-    image: "https://via.placeholder.com/150", // Replace with actual image URL
-    rating: 4.5,
-    reviews: 120,
-  },
-  { 
-    id: 3,
-    title: "Pineapple Juice",
-    price: 70,
-    description: "Sweet and tangy pineapple juice that refreshes your senses.",
-    image: "https://via.placeholder.com/150", // Replace with actual image URL
-    rating: 4.7,
-    reviews: 45,
-  },
-];
+import { useRecoilState, useRecoilValue } from "recoil";
+import { cartState } from "../atoms/CartState";
+import { Shops } from "../atoms/shops";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function Menu() {
-  const [cart, setCart] = useRecoilState(cartState);  // Manage cart state
+  const [cart, setCart] = useRecoilState(cartState);
+  const shops = useRecoilValue(Shops);
+  const { id } = useParams();
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    const selectedShop = shops.find((shop) => shop.id === Number(id));
+    setMenuItems(selectedShop?.menuItems || []);
+  }, [id, shops]);
+
+  const addToCart = (item) => {
+    if (cart.length > 0 && cart[0].shopId !== Number(id)) {
+      alert("You cannot add items from a different shop. Please clear your cart first.");
+      return;
+    }
+
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
+      if (existingItem) {
+        return prevCart.map((cartItem) =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        );
+      } else {
+        return [...prevCart, { ...item, shopId: Number(id), quantity: 1 }];
+      }
+    });
+  };
 
   return (
-    <div>
-      <Navbar /> 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-3">
+    <div className="h-screen w-full bg-white">
+      <Navbar />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-3 bg-white">
         {menuItems.map((item) => (
           <MenuComponent
-            key={item.id}  // Use a unique key for each component
-            item={item}// Pass cart state
+            key={item.id}
+            item={item}
+            shopId={Number(id)}
+            addToCart={() => addToCart(item)}
           />
         ))}
       </div>
