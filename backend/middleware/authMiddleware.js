@@ -17,7 +17,7 @@ const JWT_SECRET = 'secret';
 
     const decoded = jwt.verify(token, JWT_SECRET);
     console.log(decoded)
-    req.user = decoded.userId;
+    req.user = decoded.user;
 
     next();
   } catch (err) {

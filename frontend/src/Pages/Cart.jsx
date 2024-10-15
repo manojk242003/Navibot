@@ -10,8 +10,10 @@ const Cart = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const locValue = useRecoilValue(Location);
   const shops = useRecoilValue(Shops);
+  console.log(locValue)
 
   useEffect(() => {
+    console.log(shops)
     axios.get('http://localhost:5000/user', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -42,9 +44,10 @@ const Cart = () => {
       formData.append('details', JSON.stringify(cart));
 
       const shopLocation = shops.find(shop => shop.id === cart[0].shopId);
+      console.log(shopLocation);
       formData.append('start_location', JSON.stringify({ lat: shopLocation.lat, lon: shopLocation.lon }));
       formData.append('end_location', JSON.stringify({ lat: locValue.lat, lon: locValue.lon }));
-
+      if(locValue.lat!=""){
       const response = await axios.post('http://localhost:5000/order', formData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -53,7 +56,7 @@ const Cart = () => {
       });
 
       alert('Order successfully placed!');
-      console.log('Order created:', response.data);
+      console.log('Order created:', response.data);}
     } catch (error) {
       console.error('Error creating order:', error);
       alert('Failed to place the order. Please try again.');
