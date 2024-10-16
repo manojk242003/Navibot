@@ -135,12 +135,12 @@ app.post('/order', authMiddleware, uploadOrderImage.single('image'), async (req,
     console.log('Order inserted, result:', result);
 
     console.log('Sending data to Flask server:', {
-      src: { lat: start_location.lat, lon: start_location.lon },
-      dest: { lat: end_location.lat, lon: end_location.lon }
+      src_lat:start_location.lat,src_lon:start_location.lon,
+      dest_lat:end_location.lat,dest_lon:end_location.lon
     });
 
     try {
-      const response = await axios.post("http://localhost:3001/travel", {
+      const response = await axios.post("http://localhost:3001/navigate", {
         src: { lat: start_location.lat, lon: start_location.lon },
         dest: { lat: end_location.lat, lon: end_location.lon }
       }, {
@@ -219,6 +219,26 @@ app.post('/login', async (req, res) => {
   } catch (error) {
     console.error('Error during login:', error);
     return res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+app.get('/user', authMiddleware, async (req, res) => {
+  const userId = req.user; // Extract user ID from the token
+
+  try {
+    const conn = await pool.getConnection();
+    const user = await conn.query('SELECT id, email, username, image FROM Users WHERE id = ?', [userId]);
+    conn.release();
+
+    if (user.length === 0) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    // Return the user information without the password
+    return res.json({ user: user[0] });
+  } catch (error) {
+    console.error('Error retrieving user profile:', error);
+    return res.status(500).json({ msg: 'Error retrieving user profile' });
   }
 });
 
